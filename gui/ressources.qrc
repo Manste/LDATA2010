@@ -1,0 +1,21 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>node.svg</file>
+    <file>reduce.svg</file>
+    <file>close.svg</file>
+    <file>resize.svg</file>
+    <file>csv_content.svg</file>
+    <file>extend.svg</file>
+    <file>upload.svg</file>
+    <file>edges.svg</file>
+    <file>graph.svg</file>
+    <file>logo.svg</file>
+    <file>network.svg</file>
+    <file>node.svg</file>
+    <file>menu-collapse.svg</file>
+    <file>menu-main.svg</file>
+    <file>graph.svg</file>
+    <file>edges.svg</file>
+  </qresource>
+  <qresource prefix="images"/>
+</RCC>
