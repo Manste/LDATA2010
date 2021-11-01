@@ -70,7 +70,7 @@
     <property name="bottomMargin">
      <number>0</number>
     </property>
-    <item>
+    <item alignment="Qt::AlignTop">
      <widget class="QFrame" name="left_menu_widget">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -79,6 +79,12 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
+        <number>20</number>
+       </property>
+       <property name="leftMargin">
+        <number>11</number>
+       </property>
        <property name="rightMargin">
         <number>11</number>
        </property>
@@ -87,13 +93,13 @@
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>60</height>
+           <height>40</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>60</height>
+           <height>40</height>
           </size>
          </property>
          <property name="frameShape">
@@ -122,14 +128,14 @@
            <widget class="QLabel" name="label_14">
             <property name="minimumSize">
              <size>
-              <width>50</width>
-              <height>50</height>
+              <width>30</width>
+              <height>30</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>50</width>
-              <height>50</height>
+              <width>30</width>
+              <height>30</height>
              </size>
             </property>
             <property name="text">
@@ -161,6 +167,12 @@
        </item>
        <item>
         <widget class="QFrame" name="frame_4">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -168,6 +180,21 @@
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="spacing">
+           <number>15</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QPushButton" name="pushButton_10">
             <property name="text">
@@ -271,6 +298,9 @@
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="spacing">
+           <number>15</number>
+          </property>
           <item>
            <widget class="QLabel" name="label_4">
             <property name="text">
@@ -307,6 +337,21 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>10</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item alignment="Qt::AlignTop">
         <widget class="QFrame" name="header_frame">
          <property name="maximumSize">
@@ -551,7 +596,7 @@
              </font>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="graph_representation">
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -824,8 +869,8 @@
          </layout>
         </widget>
        </item>
-       <item>
-        <widget class="QFrame" name="frame_8">
+       <item alignment="Qt::AlignTop">
+        <widget class="QFrame" name="footer_frame">
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -833,6 +878,21 @@
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QFrame" name="frame_13">
             <property name="frameShape">
@@ -841,7 +901,22 @@
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_7">
+            <layout class="QVBoxLayout" name="verticalLayout_7" stretch="0">
+             <property name="spacing">
+              <number>6</number>
+             </property>
+             <property name="leftMargin">
+              <number>11</number>
+             </property>
+             <property name="topMargin">
+              <number>11</number>
+             </property>
+             <property name="rightMargin">
+              <number>11</number>
+             </property>
+             <property name="bottomMargin">
+              <number>11</number>
+             </property>
              <item>
               <widget class="QLabel" name="label_8">
                <property name="text">
@@ -852,7 +927,7 @@
             </layout>
            </widget>
           </item>
-          <item>
+          <item alignment="Qt::AlignRight|Qt::AlignBottom">
            <widget class="QFrame" name="frame_14">
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
@@ -860,22 +935,33 @@
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <widget class="QFrame" name="size_grip">
-             <property name="geometry">
-              <rect>
-               <x>60</x>
-               <y>40</y>
-               <width>120</width>
-               <height>80</height>
-              </rect>
+            <layout class="QVBoxLayout" name="verticalLayout_14">
+             <property name="spacing">
+              <number>0</number>
              </property>
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
+             <property name="leftMargin">
+              <number>0</number>
              </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
+             <property name="topMargin">
+              <number>0</number>
              </property>
-            </widget>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QFrame" name="size_grip">
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
