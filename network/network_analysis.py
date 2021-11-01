@@ -90,3 +90,4 @@ class Net_analysis:
             if len(k_shell) != 0: store_k_shell[k] = k_shell
             k += 1
         return store_k_shell
+

@@ -10,6 +10,11 @@ from PyQt5.QtWidgets import *
 from PySide6.QtGui import QPainter
 from PySide6.QtCharts import QChart
 
+# Import Custom widgets
+from Custom_widgets.Widgets import *
+
+#
+
 # Import for Math Modularity
 # from random import randrange
 # from functools import partial
