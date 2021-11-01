@@ -136,7 +136,7 @@
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="ressources.qrc">:/icons/logo.svg</pixmap>
+             <pixmap>icons/logo.svg</pixmap>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
@@ -174,8 +174,8 @@
              <string>CSV Content</string>
             </property>
             <property name="icon">
-             <iconset resource="ressources.qrc">
-              <normaloff>:/icons/csv_content.svg</normaloff>:/icons/csv_content.svg</iconset>
+             <iconset>
+              <normaloff>icons/csv_content.svg</normaloff>icons/csv_content.svg</iconset>
             </property>
            </widget>
           </item>
@@ -185,8 +185,8 @@
              <string>Graph Representation</string>
             </property>
             <property name="icon">
-             <iconset resource="ressources.qrc">
-              <normaloff>:/icons/graph.svg</normaloff>:/icons/graph.svg</iconset>
+             <iconset>
+              <normaloff>icons/graph.svg</normaloff>icons/graph.svg</iconset>
             </property>
            </widget>
           </item>
@@ -196,8 +196,8 @@
              <string>Network Overview</string>
             </property>
             <property name="icon">
-             <iconset resource="ressources.qrc">
-              <normaloff>:/icons/network.svg</normaloff>:/icons/network.svg</iconset>
+             <iconset>
+              <normaloff>icons/network.svg</normaloff>icons/network.svg</iconset>
             </property>
            </widget>
           </item>
@@ -207,8 +207,8 @@
              <string>Edge Overview</string>
             </property>
             <property name="icon">
-             <iconset resource="ressources.qrc">
-              <normaloff>:/icons/edges.svg</normaloff>:/icons/edges.svg</iconset>
+             <iconset>
+              <normaloff>icons/edges.svg</normaloff>icons/edges.svg</iconset>
             </property>
            </widget>
           </item>
@@ -218,8 +218,8 @@
              <string>Node Overview</string>
             </property>
             <property name="icon">
-             <iconset resource="ressources.qrc">
-              <normaloff>:/icons/node.svg</normaloff>:/icons/node.svg</iconset>
+             <iconset>
+              <normaloff>icons/node.svg</normaloff>icons/node.svg</iconset>
             </property>
            </widget>
           </item>
@@ -229,8 +229,8 @@
              <string>Upload CSV</string>
             </property>
             <property name="icon">
-             <iconset resource="ressources.qrc">
-              <normaloff>:/icons/upload.svg</normaloff>:/icons/upload.svg</iconset>
+             <iconset>
+              <normaloff>icons/upload.svg</normaloff>icons/upload.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -379,8 +379,8 @@
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="ressources.qrc">
-                 <normaloff>:/icons/menu-main.svg</normaloff>:/icons/menu-main.svg</iconset>
+                <iconset>
+                 <normaloff>icons/menu-main.svg</normaloff>icons/menu-main.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -464,8 +464,8 @@
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="ressources.qrc">
-                 <normaloff>:/icons/reduce.svg</normaloff>:/icons/reduce.svg</iconset>
+                <iconset>
+                 <normaloff>icons/reduce.svg</normaloff>icons/reduce.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -493,8 +493,8 @@
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="ressources.qrc">
-                 <normaloff>:/icons/extend.svg</normaloff>:/icons/extend.svg</iconset>
+                <iconset>
+                 <normaloff>icons/extend.svg</normaloff>icons/extend.svg</iconset>
                </property>
               </widget>
              </item>
@@ -516,8 +516,8 @@
                 <string/>
                </property>
                <property name="icon">
-                <iconset resource="ressources.qrc">
-                 <normaloff>:/icons/close.svg</normaloff>:/icons/close.svg</iconset>
+                <iconset>
+                 <normaloff>icons/close.svg</normaloff>icons/close.svg</iconset>
                </property>
                <property name="iconSize">
                 <size>
@@ -548,12 +548,10 @@
              <font>
               <family> San Francisco</family>
               <pointsize>-1</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
              </font>
             </property>
             <property name="currentIndex">
-             <number>3</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="graph_representation">
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -572,8 +570,6 @@
                     <font>
                      <family> San Francisco</family>
                      <pointsize>-1</pointsize>
-                     <weight>75</weight>
-                     <bold>true</bold>
                     </font>
                    </property>
                    <property name="text">
@@ -626,8 +622,6 @@
                     <font>
                      <family> San Francisco</family>
                      <pointsize>-1</pointsize>
-                     <weight>75</weight>
-                     <bold>true</bold>
                     </font>
                    </property>
                    <property name="text">
@@ -680,8 +674,6 @@
                     <font>
                      <family> San Francisco</family>
                      <pointsize>-1</pointsize>
-                     <weight>75</weight>
-                     <bold>true</bold>
                     </font>
                    </property>
                    <property name="text">
@@ -734,8 +726,6 @@
                     <font>
                      <family> San Francisco</family>
                      <pointsize>-1</pointsize>
-                     <weight>75</weight>
-                     <bold>true</bold>
                     </font>
                    </property>
                    <property name="text">
@@ -779,8 +769,6 @@
                  <font>
                   <family> San Francisco</family>
                   <pointsize>-1</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
                  </font>
                 </property>
                 <property name="frameShape">
@@ -796,8 +784,6 @@
                     <font>
                      <family> San Francisco</family>
                      <pointsize>-1</pointsize>
-                     <weight>75</weight>
-                     <bold>true</bold>
                     </font>
                    </property>
                    <property name="text">
@@ -901,8 +887,6 @@
    </layout>
   </widget>
  </widget>
- <resources>
-  <include location="ressources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
