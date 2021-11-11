@@ -38,7 +38,7 @@
 	background-color: rgba(33, 43, 51);
 }
 
-#left_menu_widget, #csv_content, #graph_representation, #network_overview, #edge_overview, #node_overview, #upload_csv {
+#left_menu_widget, #csv_content, #graph_representation, #network_overview, #edge_overview, #node_overview, #upload_nodes_button, #upload_edges_button {
 	background-color: rgba(61, 80, 95, 100);
 }
 
@@ -201,13 +201,36 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QPushButton" name="csv_content_button">
+           <widget class="QPushButton" name="upload_nodes_button">
             <property name="text">
-             <string>CSV Content</string>
+             <string>Upload Nodes CSV</string>
             </property>
             <property name="icon">
              <iconset>
               <normaloff>icons/csv_content.svg</normaloff>icons/csv_content.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="upload_edges_button">
+            <property name="text">
+             <string>Upload Edges CSV</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>icons/csv_content.svg</normaloff>icons/csv_content.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
             </property>
            </widget>
           </item>
@@ -252,23 +275,6 @@
             <property name="icon">
              <iconset>
               <normaloff>icons/node.svg</normaloff>icons/node.svg</iconset>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="upload_csv_button">
-            <property name="text">
-             <string>Upload CSV</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>icons/upload.svg</normaloff>icons/upload.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
             </property>
            </widget>
           </item>
@@ -427,7 +433,7 @@
              </font>
             </property>
             <property name="currentIndex">
-             <number>4</number>
+             <number>5</number>
             </property>
             <widget class="QWidget" name="home">
              <property name="styleSheet">
@@ -461,8 +467,6 @@
                 <font>
                  <family> San Francisco</family>
                  <pointsize>-1</pointsize>
-                 <weight>75</weight>
-                 <bold>true</bold>
                 </font>
                </property>
                <property name="text">
@@ -571,7 +575,126 @@
                 <property name="frameShadow">
                  <enum>QFrame::Raised</enum>
                 </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_8"/>
+                <layout class="QVBoxLayout" name="verticalLayout_15">
+                 <item>
+                  <widget class="QFrame" name="frame">
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_16">
+                    <property name="spacing">
+                     <number>10</number>
+                    </property>
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_9">
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <family> San Francisco</family>
+                        <pointsize>-1</pointsize>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>Path to nodes files</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="nodes_path">
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string>No nodes files uploaded</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QFrame" name="frame_8">
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_17">
+                    <property name="spacing">
+                     <number>10</number>
+                    </property>
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_10">
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <family> San Francisco</family>
+                        <pointsize>-1</pointsize>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>Path to nodes files</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="edges_path">
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string>No  edges files uploaded</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
              </layout>

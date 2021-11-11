@@ -2,13 +2,13 @@ import networkx as nx
 import community as community_louvain
 import pandas as pd
 import matplotlib.pyplot as plt
+import codecs
 
 
-class Net_analysis:
+class Graph:
     def __init__(self, nodes_csv=None, edges_csv=None):
-        assert nodes_csv is None or edges_csv is None, "Impossible to work with empty dataset"
-        self.df_nodes = pd.read_table(nodes_csv)
-        self.df_edges = pd.read_table(edges_csv)
+        self.df_nodes = pd.read_csv(nodes_csv)
+        self.df_edges = pd.read_csv(edges_csv)
         self.graph = self.createGraph()
 
     # Function To Build Graph

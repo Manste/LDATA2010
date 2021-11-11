@@ -1,6 +1,6 @@
 import sys
+from network.network_analysis import Graph
 import os
-import platform
 
 from PyQt5 import uic
 
@@ -14,9 +14,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
-# Import for Math Modules
-# from random import randrange
-# from functools import partial
 
 shadow_elements = {
     "left_menu_widget",
@@ -33,6 +30,9 @@ class MainWindow(QMainWindow):
         self.ui = uic.loadUi("gui\MainWindow.ui", self)
         # set the minimum size of the window
         self.setMinimumSize(850, 600)
+        self.nodes_file = None
+        self.edges_file = None
+        self.graph = None
 
         # apply shadow to widgets on shadow_elements list
         for x in shadow_elements:
@@ -46,17 +46,13 @@ class MainWindow(QMainWindow):
 
         # Navigation between pages
         self.ui.stackedWidget.setCurrentWidget(self.ui.frame_home)
-        self.ui.csv_content_button.clicked.connect(self.csv_content_action)
         self.ui.graph_represent_button.clicked.connect(self.graph_representation_action)
         self.ui.network_overview_button.clicked.connect(self.network_overview_action)
-        self.ui.upload_csv_button.clicked.connect(self.upload_csv_action)
+        self.ui.upload_edges_button.clicked.connect(self.upload_edges_csv_action)
+        self.ui.upload_nodes_button.clicked.connect(self.upload_nodes_csv_action)
         self.ui.nodes_overview_button.clicked.connect(self.nodes_overview_action)
         self.ui.edges_overview_button.clicked.connect(self.edges_overview_action)
         self.show()
-
-    def csv_content_action(self):
-        self.ui.label_7.setText("CSV content")
-        self.ui.stackedWidget.setCurrentWidget(self.ui.csv_content)
 
     def graph_representation_action(self):
         self.ui.label_7.setText("Graph representation")
@@ -67,7 +63,37 @@ class MainWindow(QMainWindow):
         self.ui.stackedWidget.setCurrentWidget(self.ui.network_overview)
 
     def upload_csv_action(self):
-        pass
+        self.ui.label_7.setText("Upload csv files")
+        self.ui.stackedWidget.setCurrentWidget(self.ui.csv_content)
+        csv_file = self.open_csv_file()
+        if not self.is_csv(csv_file):
+            self.show_error_popup("Error", "CSV file: Wrong datatype", QMessageBox.Critical)
+        return csv_file
+
+    def upload_nodes_csv_action(self):
+        self.nodes_file = self.upload_csv_action()
+        self.ui.nodes_path.setText(self.nodes_file)
+        if self.nodes_file and self.edges_file:
+            self.graph = Graph(self.nodes_file, self.edges_file)
+
+    def upload_edges_csv_action(self):
+        self.edges_file = self.upload_csv_action()
+        self.ui.edges_path.setText(self.edges_file)
+        if self.nodes_file and self.edges_file:
+            self.graph = Graph(nodes_csv=self.nodes_file, edges_csv=self.edges_file)
+
+
+    def show_error_popup(self, title, text, icon_type):
+        msg = QMessageBox()
+        msg.setWindowTitle(title)
+        msg.setText(text)
+        msg.setIcon(icon_type)
+        x = msg.exec_()
+
+    def open_csv_file(self):
+        filename = QFileDialog.getOpenFileName()
+        path = filename[0]
+        return path
 
     def nodes_overview_action(self):
         self.ui.label_7.setText("Nodes overview")
@@ -77,6 +103,9 @@ class MainWindow(QMainWindow):
         self.ui.label_7.setText("Edges overview")
         self.ui.stackedWidget.setCurrentWidget(self.ui.edges_overview)
 
+    def is_csv(self, path):
+        name, extension = os.path.splitext(path)
+        return extension == ".csv" or extension == '.txt'
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
