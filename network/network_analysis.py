@@ -2,36 +2,27 @@ import networkx as nx
 import community as community_louvain
 import pandas as pd
 import matplotlib.pyplot as plt
-import codecs
 
 
 class Graph:
-    def __init__(self, nodes_csv=None, edges_csv=None):
-        self.df_nodes = pd.read_csv(nodes_csv)
-        self.df_edges = pd.read_csv(edges_csv)
-        self.graph = self.createGraph()
+    def __init__(self, nodes_csv=None, edges_csv=None, separator=','):
+        self.graph = nx.Graph()
+        self.df_nodes = pd.read_csv(nodes_csv, sep=',')
+        self.df_edges = pd.read_csv(edges_csv, sep=',')
+        self.createGraph()
+        self.pos = nx.layout.spring_layout(self.graph)
 
     # Function To Build Graph
     def createGraph(self):
-        nb_nodes = len(self.df_nodes.index)
-        self.graph = nx.Graph()
-        count = 0
-        while count < nb_nodes:
-            first = self.df_nodes.iat[count, 3]
-            self.graph.add_node(first)
-            count += 1
-        label = {}
-        for i in self.graph.nodes():
-            label[i] = i
-        count2 = 0
-        tab = self.graph.nodes()
-        nb_edges = len(self.df_edges.index)
-        while count2 < nb_edges:
-            first = self.df_edges.iat[count2, 7]
-            second = self.df_edges.iat[count2, 8]
-            if first in tab and second in tab:
-                self.graph.add_edge(first, second)
-            count2 += 1
+        self.graph.add_nodes_from(self.df_nodes['#BIOGRID ID'])
+        self.graph.add_edges_from(self.df_edges[['BioGRID Gene ID', 'Related BioGRID Gene ID']].values.tolist())
+        dict_nodes = self.df_nodes.set_index('#BIOGRID ID').to_dict()
+        for key in dict_nodes:
+            nx.set_node_attributes(self.graph, dict_nodes[key], name=key)
+        dict_edges = self.df_edges.set_index(['BioGRID Gene ID', 'Related BioGRID Gene ID']).to_dict()
+        for key in dict_edges:
+            nx.set_edge_attributes(self.graph, dict_edges[key], name=key)
+        self.graph.remove_node('-')
         return self.graph
 
     # Todo: Improve the Visualisation of the Graph
