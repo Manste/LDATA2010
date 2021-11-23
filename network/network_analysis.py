@@ -2,28 +2,29 @@ import networkx as nx
 import community as community_louvain
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 
-class Graph:
+class MyGraph:
     def __init__(self, nodes_csv=None, edges_csv=None, separator=','):
         self.graph = nx.Graph()
         self.df_nodes = pd.read_csv(nodes_csv, sep=',')
         self.df_edges = pd.read_csv(edges_csv, sep=',')
-        self.createGraph()
         self.pos = nx.layout.spring_layout(self.graph)
+        self.createGraph()
 
     # Function To Build Graph
     def createGraph(self):
         self.graph.add_nodes_from(self.df_nodes['#BIOGRID ID'])
-        self.graph.add_edges_from(self.df_edges[['BioGRID Gene ID', 'Related BioGRID Gene ID']].values.tolist())
+        tmp_df_edges = self.df_edges[self.df_edges['Related BioGRID Gene ID'] != '-']
+        tmp_df_edges = tmp_df_edges.astype({'BioGRID Gene ID': int, 'Related BioGRID Gene ID': int})
+        self.graph.add_edges_from(tmp_df_edges[['BioGRID Gene ID', 'Related BioGRID Gene ID']].values.tolist())
         dict_nodes = self.df_nodes.set_index('#BIOGRID ID').to_dict()
         for key in dict_nodes:
             nx.set_node_attributes(self.graph, dict_nodes[key], name=key)
-        dict_edges = self.df_edges.set_index(['BioGRID Gene ID', 'Related BioGRID Gene ID']).to_dict()
+        dict_edges = tmp_df_edges.set_index(['BioGRID Gene ID', 'Related BioGRID Gene ID']).to_dict()
         for key in dict_edges:
             nx.set_edge_attributes(self.graph, dict_edges[key], name=key)
-        self.graph.remove_node('-')
-        return self.graph
 
     # Todo: Improve the Visualisation of the Graph
     def temp_visualization(self):
@@ -82,3 +83,21 @@ class Graph:
             k += 1
         return store_k_shell
 
+    def get_elements(self):
+        pos = nx.spring_layout(self.graph, seed=4321, k=3)
+        nodes = [
+            {
+                'data': {'id': str(node), 'label': self.graph.nodes[node].get('OFFICIAL SYMBOL', 'Unknown')}
+            }
+            for node in self.graph.nodes
+        ]
+        edges = [
+            {
+                'data': {'source': str(source), 'target': str(target), 'label': self.graph.edges[(source, target)].get('Official Symbol', 'Unknown')}
+            }
+            for source, target in self.graph.edges
+        ]
+        return nodes + edges
+
+#test = MyGraph('../data/nodes.csv', '../data/edges.csv')
+#print(test.get_elements())

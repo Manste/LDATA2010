@@ -56,7 +56,7 @@
 	background-color: rgb(120, 157, 186);
 }
 
-#frame_4 QPushButton {
+#frame_4 QPushButton, #load_data_button {
 	padding: 10px;
 	border-radius: 5px;
 	background-color: rgba(33, 43, 51, 100);
@@ -433,7 +433,7 @@
              </font>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>5</number>
             </property>
             <widget class="QWidget" name="home">
              <property name="styleSheet">
@@ -700,6 +700,13 @@ background-color: rgba(61, 80, 95, 100)
                      </widget>
                     </item>
                    </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="load_data_button">
+                   <property name="text">
+                    <string>Load Data</string>
+                   </property>
                   </widget>
                  </item>
                 </layout>
