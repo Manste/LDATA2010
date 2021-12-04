@@ -5,15 +5,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-
 class MyGraph:
-    def __init__(self, nodes=None, edges=None):
+    def __init__(self, nodes_csv=None, edges_csv=None, separator=','):
         self.graph = nx.Graph()
-        self.df_nodes = nodes
-        self.df_edges = edges
+        self.df_nodes = pd.read_csv(nodes_csv, sep=',')
+        self.df_edges = pd.read_csv(edges_csv, sep=',')
+        self.pos = nx.layout.spring_layout(self.graph)
         self.df_nodes["color"] = ["yellow" for _ in range(self.df_nodes.shape[0])]
         self.createGraph()
-
 
     # Function To Build Graph
     def createGraph(self):
@@ -95,10 +94,6 @@ class MyGraph:
             pos = nx.spring_layout(self.graph)
         if layout == "fruchterman":
             pos = nx.fruchterman_reingold_layout(self.graph)
-        if layout == "spiral":
-            pos = nx.spiral_layout(self.graph)
-        if layout == "shell":
-            pos = nx.shell_layout(self.graph)
         nodes = [
             {
                 'data': {'id': str(node), 'label': self.graph.nodes[node].get('OFFICIAL SYMBOL', 'Unknown')},
