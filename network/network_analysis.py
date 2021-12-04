@@ -11,6 +11,7 @@ class MyGraph:
         self.df_nodes = pd.read_csv(nodes_csv, sep=',')
         self.df_edges = pd.read_csv(edges_csv, sep=',')
         self.pos = nx.layout.spring_layout(self.graph)
+        self.df_nodes["color"] = ["yellow" for _ in range(self.df_nodes.shape[0])]
         self.createGraph()
 
     # Function To Build Graph
@@ -83,11 +84,20 @@ class MyGraph:
             k += 1
         return store_k_shell
 
-    def get_elements(self):
-        pos = nx.spring_layout(self.graph, seed=4321, k=3)
+    def get_elements(self, layout):
+        pos = nx.random_layout(self.graph)
+        if layout == 'circular':
+            pos = nx.circular_layout(self.graph)
+        if layout == 'spectral':
+            pos = nx.spectral_layout(self.graph)
+        if layout == 'spring':
+            pos = nx.spring_layout(self.graph)
+        if layout == "fruchterman":
+            pos = nx.fruchterman_reingold_layout(self.graph)
         nodes = [
             {
-                'data': {'id': str(node), 'label': self.graph.nodes[node].get('OFFICIAL SYMBOL', 'Unknown')}
+                'data': {'id': str(node), 'label': self.graph.nodes[node].get('OFFICIAL SYMBOL', 'Unknown')},
+                'position': {'x': pos[node][0]*1000 , 'y': pos[node][1]*1000}
             }
             for node in self.graph.nodes
         ]

@@ -24,12 +24,14 @@ class Mainwindow(QtWidgets.QMainWindow):
         lay.addWidget(self.browser, stretch=1)
 
         self.qdask = QDash()
-        self.qdask.layout_network('circle', self.graph_net.get_elements())
+        self.qdask.set_graph_net(self.graph_net)
+        self.qdask.layout_network('preset', 'circular')
 
         self.qdask.run(debug=True, use_reloader=False)
         self.browser.load(QtCore.QUrl("http://127.0.0.1:8050"))
 
-        self.button.clicked.connect(self.update_figure)
+        #self.button.clicked.connect(self.update_figure)
+        #self.update_figure()
 
     @QtCore.pyqtSlot()
     def update_figure(self):

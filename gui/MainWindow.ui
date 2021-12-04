@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1035</width>
-    <height>727</height>
+    <height>907</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -56,7 +56,7 @@
 	background-color: rgb(120, 157, 186);
 }
 
-#frame_4 QPushButton, #load_data_button {
+#frame_4 QPushButton, #left_menu_widget QPushButton, #load_data_button {
 	padding: 10px;
 	border-radius: 5px;
 	background-color: rgba(33, 43, 51, 100);
@@ -77,6 +77,12 @@
     </property>
     <item alignment="Qt::AlignTop">
      <widget class="QFrame" name="left_menu_widget">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -147,7 +153,7 @@
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap>icons/logo.svg</pixmap>
+             <pixmap>../../../../../../../.designer/backup/icons/logo.svg</pixmap>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
@@ -207,7 +213,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>icons/csv_content.svg</normaloff>icons/csv_content.svg</iconset>
+              <normaloff>../../../../../../../.designer/backup/icons/csv_content.svg</normaloff>../../../../../../../.designer/backup/icons/csv_content.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -224,7 +230,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>icons/csv_content.svg</normaloff>icons/csv_content.svg</iconset>
+              <normaloff>../../../../../../../.designer/backup/icons/csv_content.svg</normaloff>../../../../../../../.designer/backup/icons/csv_content.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -241,7 +247,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>icons/graph.svg</normaloff>icons/graph.svg</iconset>
+              <normaloff>../../../../../../../.designer/backup/icons/graph.svg</normaloff>../../../../../../../.designer/backup/icons/graph.svg</iconset>
             </property>
            </widget>
           </item>
@@ -252,7 +258,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>icons/network.svg</normaloff>icons/network.svg</iconset>
+              <normaloff>../../../../../../../.designer/backup/icons/network.svg</normaloff>../../../../../../../.designer/backup/icons/network.svg</iconset>
             </property>
            </widget>
           </item>
@@ -263,7 +269,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>icons/edges.svg</normaloff>icons/edges.svg</iconset>
+              <normaloff>../../../../../../../.designer/backup/icons/edges.svg</normaloff>../../../../../../../.designer/backup/icons/edges.svg</iconset>
             </property>
            </widget>
           </item>
@@ -274,26 +280,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>icons/node.svg</normaloff>icons/node.svg</iconset>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item alignment="Qt::AlignTop">
-        <widget class="QFrame" name="frame_5">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
-          <item>
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Network Layout</string>
+              <normaloff>../../../../../../../.designer/backup/icons/node.svg</normaloff>../../../../../../../.designer/backup/icons/node.svg</iconset>
             </property>
            </widget>
           </item>
@@ -313,27 +300,81 @@
            <number>15</number>
           </property>
           <item>
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>TextLabel</string>
+           <widget class="QFrame" name="frame_5">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>TextLabel</string>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <item>
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Network Layout</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="grid_button">
+         <property name="text">
+          <string>Grid</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="spring_button">
+         <property name="text">
+          <string>Spring</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="spectral_button">
+         <property name="text">
+          <string>Spectral</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="circular_button">
+         <property name="text">
+          <string>Circular</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="random_button">
+         <property name="text">
+          <string>Random</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="concentric">
+         <property name="text">
+          <string>Concentric</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="breadfirst_button">
+         <property name="text">
+          <string>Breadfirst</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="fruchteman_button">
+         <property name="text">
+          <string>Fruchterman Reingold</string>
+         </property>
         </widget>
        </item>
       </layout>
@@ -433,7 +474,7 @@
              </font>
             </property>
             <property name="currentIndex">
-             <number>5</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="home">
              <property name="styleSheet">

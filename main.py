@@ -1,17 +1,14 @@
 import sys
-from PyQt5 import QtWebEngineWidgets
-from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QMainWindow, QFileDialog, QMessageBox, QApplication
-from dash import html, dcc
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtWebEngineWidgets import *
+from dash import dash
 
+from gui.interface import *
 from network.network_analysis import MyGraph
 from network.display_network import QDash
 import os
-
-from PyQt5 import uic
-from dash.dependencies import Input, Output
-import plotly.graph_objects as go
-from PyQt5.QtCore import *
 
 shadow_elements = {
     "left_menu_widget",
@@ -27,14 +24,17 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.qdask = QDash()
-        self.ui = uic.loadUi("gui\MainWindow.ui", self)
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.show()
+        self.qdash = QDash()
         # set the minimum size of the window
         self.setMinimumSize(850, 600)
         self.nodes_file = None
         self.edges_file = None
         self.graph_net = None
         self.graph = None
+        self.qdash.run(debug=True, use_reloader=False)
 
         # apply shadow to widgets on shadow_elements list
         for x in shadow_elements:
@@ -55,14 +55,25 @@ class MainWindow(QMainWindow):
         self.ui.upload_nodes_button.clicked.connect(self.upload_nodes_csv_action)
         self.ui.nodes_overview_button.clicked.connect(self.nodes_overview_action)
         self.ui.edges_overview_button.clicked.connect(self.edges_overview_action)
+        self.ui.random_button.clicked.connect(lambda x: self.set_layout('preset', 'random'))
+        self.ui.circular_button.clicked.connect(lambda x: self.set_layout('preset', 'circular'))
         self.show()
+
+    def set_layout(self, dash_layout, networkx_layout):
+        self.qdash.layout_network(dash_layout, networkx_layout)
+        self.ui.network_web_engine.reload()
 
     def graph_representation_action(self):
         self.ui.label_7.setText("Graph representation")
         self.ui.stackedWidget.setCurrentWidget(self.ui.graph_representation)
-        self.qdask.run(debug=True, use_reloader=False)
-        self.qdask.app.title = "Graph representation"
-        self.ui.network_web_engine.load(QUrl("http://127.0.0.1:8050"))
+        if not self.graph_net:
+            return
+        elif self.qdash.graph_net:
+            self.ui.network_web_engine.reload()
+        else:
+            self.qdash.set_graph_net(self.graph_net)
+            self.qdash.layout_network('preset', 'circular')
+            self.ui.network_web_engine.load(QtCore.QUrl("http://127.0.0.1:8050"))
 
     def network_overview_action(self):
         self.ui.label_7.setText("Network overview")
@@ -91,8 +102,7 @@ class MainWindow(QMainWindow):
         if self.nodes_file and self.edges_file:
             self.graph_net = MyGraph(self.nodes_file, self.edges_file)
             self.graph = self.graph_net.graph
-            self.show_popup("Data Loaded", "Network is created", QMessageBox.Information)
-
+            self.show_popup("Succeed", "Network created", QMessageBox.Information)
 
     def show_popup(self, title, text, icon_type):
         msg = QMessageBox()
