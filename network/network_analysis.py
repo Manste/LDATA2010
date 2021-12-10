@@ -18,15 +18,10 @@ class MyGraph:
     # Function To Build Graph
     def createGraph(self):
         self.graph.add_nodes_from(self.df_nodes['#BIOGRID ID'])
-        tmp_df_edges = self.df_edges[self.df_edges['Related BioGRID Gene ID'] != '-']
-        tmp_df_edges = tmp_df_edges.astype({'BioGRID Gene ID': int, 'Related BioGRID Gene ID': int})
-        self.graph.add_edges_from(tmp_df_edges[['BioGRID Gene ID', 'Related BioGRID Gene ID']].values.tolist())
+        self.graph = nx.from_pandas_edgelist(self.df_edges, 'BioGRID ID Interactor A', 'BioGRID ID Interactor B')
         dict_nodes = self.df_nodes.set_index('#BIOGRID ID').to_dict()
         for key in dict_nodes:
             nx.set_node_attributes(self.graph, dict_nodes[key], name=key)
-        dict_edges = tmp_df_edges.set_index(['BioGRID Gene ID', 'Related BioGRID Gene ID']).to_dict()
-        for key in dict_edges:
-            nx.set_edge_attributes(self.graph, dict_edges[key], name=key)
 
     # Todo: Improve the Visualisation of the Graph
     def temp_visualization(self):
@@ -102,7 +97,7 @@ class MyGraph:
         nodes = [
             {
                 'data': {'id': str(node), 'label': self.graph.nodes[node].get('OFFICIAL SYMBOL', 'Unknown')},
-                'position': {'x': pos[node][0]*1000 , 'y': pos[node][1]*1000}
+                'position': {'x': pos[node][0]*100 , 'y': pos[node][1]*100}
             }
             for node in self.graph.nodes
         ]

@@ -147,7 +147,7 @@ class InfoVis:
             Input('network', 'tapNodeData'),
         )
         def update_nodes(data):
-            style= {"width": "100%", "display": "block"}
+            style = {"width": "100%", "display": "block"}
             if self.graph is not None:
                 df_nodes = self.graph.df_nodes.copy()
                 if data is None:
@@ -189,10 +189,10 @@ class InfoVis:
             if 'csv' in filename:
                 # Assume that the user uploaded a CSV file
                 self.df_edges = pd.read_csv(
-                    io.StringIO(decoded.decode('utf-8')))
+                    io.StringIO(decoded.decode('utf-8')), dtype='unicode')
             elif 'xls' in filename:
                 # Assume that the user uploaded an excel file
-                self.df_edges = pd.read_excel(io.BytesIO(decoded))
+                self.df_edges = pd.read_excel(io.BytesIO(decoded), dtype='unicode')
         except Exception as e:
             print(e)
             return html.Div([
