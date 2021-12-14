@@ -4,7 +4,7 @@ import datetime
 import io
 from dash import dcc, html, Dash
 from dash.dependencies import Input, Output, State
-#from network_analysis import MyGraph
+from network_analysis import MyGraph
 import dash_cytoscape as cyto
 import plotly.express as px
 
