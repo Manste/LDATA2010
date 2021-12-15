@@ -96,7 +96,11 @@ class InfoVis:
                                     html.Div(id='communities output',children='', style={"margin": "30px 0 30px 0"})
                                 ])
                             ],style={'display': 'flex', "margin": "30px 10px 0 10px"}
-                        )
+                        ),
+                        html.Div([
+                            html.H5("Centrality measures: "),
+                            html.Div(id='centrality-measures', children='', style={"margin": "10px 0 30px 10px"}),
+                        ], style={"margin": "30px 10px 0 10px"})
                     ],
                     style={"width": "20%"}),
                 html.Div(
@@ -110,18 +114,6 @@ class InfoVis:
                         minZoom=0.2,
                         maxZoom=10
                     ), style={'width': '80%'}),
-                html.Div(
-                    [
-                        html.Br(),
-                        html.Div([
-                            dcc.Graph(
-                                id='graph',
-                                figure={}
-                            )
-                        ], id="centrality-charts", style={"width": "100%"}),
-                    ],
-                    style={"width": "100%"}
-                ),
                 html.Div(
                 cyto.Cytoscape(
                     id = 'communities network',
@@ -140,6 +132,7 @@ class InfoVis:
                 "flexWrap": "wrap"
             })], style={}
         )
+
         @self.app.callback(Output('communities output','children'),
                            Output('communities network','elements'),
                            Input('communities button','n_clicks'),
@@ -151,6 +144,7 @@ class InfoVis:
                 new_elems = self.graph.color_elems(self.graph.communities_detection(),elems)
                 print(new_elems)
                 return 'Number of Communities : {}'.format(self.graph.ncommunities()), new_elems
+
         @self.app.callback(Output('numerical metrics output','children'),
         Input('numerical metrics button','n_clicks'))
         def numerical_metrics(n):
@@ -158,6 +152,7 @@ class InfoVis:
                 return ''
             else :
                 return 'Number of Nodes : {} Number of Edges : {} Assortativity Degree : {} Density : {}'.format(self.graph.numberofnodes(),self.graph.numberofedges(),self.graph.assortativitydegree(),self.graph.density())
+
         @self.app.callback(Output('output-data-upload-nodes', 'children'),
                            Input('upload-data-nodes', 'contents'),
                            State('upload-data-nodes', 'filename'),
@@ -192,54 +187,25 @@ class InfoVis:
             return {},[]
 
         @self.app.callback(
-            Output('graph', 'figure'),
+            Output('centrality-measures', 'children'),
             Input('network', 'tapNodeData')
         )
-        def update_nodes(data):
-            anchos = [0.2] * 5
-            fig = go.Figure()
+        def update_centrality_measures(data):
             if self.graph is not None:
                 self.graph.set_centrality_measures()
                 df = self.graph.df_centrality.copy()
-                print(data)
                 if data is None:
-                    fig.add_trace(
-                        go.Bar(x=df["nodes"].iloc[1:22], y=df["bet_centrality"].iloc[1:22], width=anchos, name="Betweeness centrality")
-                    )
-                    fig.add_trace(
-                        go.Bar(x=df["nodes"].iloc[1:22], y=df["closeness_centrality"].iloc[1:22], width=anchos, name="Closeness centrality")
-                    )
-                    fig.add_trace(
-                        go.Bar(x=df["nodes"].iloc[1:22], y=df["eigen_centrality"].iloc[1:22], width=anchos, name="Eigenvalue centrality")
-                    )
+                    return "Nodes not selected"
                 else:
-                    index = np.where(df[["nodes"]] == data.id)[0][0]
-                    start_idx = 11 - index
-                    end_idx = 11 + index
-                    fig.add_trace(
-                        go.Bar(x=df["nodes"].iloc[start_idx:end_idx], y=df["bet_centrality"].iloc[start_idx:end_idx], width=anchos, name="Betweeness centrality", text=df["bet_centrality"].iloc[start_idx:end_idx])
-                    )
-                    fig.add_trace(
-                        go.Bar(x=df["nodes"].iloc[start_idx:end_idx], y=df["closeness_centrality"].iloc[start_idx:end_idx], width=anchos, name="Closeness centrality", text=df["closeness_centrality"].iloc[start_idx:end_idx])
-                    )
-                    fig.add_trace(
-                        go.Bar(x=df["nodes"].iloc[start_idx:end_idx], y=df["eigen_centrality"].iloc[start_idx:end_idx], width=anchos, name="Eigenvalue centrality", text=["eigen_centrality"].iloc[start_idx:end_idx])
-                    )
-                fig.update_layout(title="Centrality measurement",
-                                  barmode='group', title_font_size=40,
-                                  width=1000, height=500)
-                fig.update_xaxes(title_text='Nodes',
-                                 title_font=dict(size=30, family='Verdana', color='black'),
-                                 tickfont=dict(family='Calibri', color='darkred', size=25))
-                fig.update_yaxes(title_text="Values",
-                                 title_font=dict(size=30, family='Verdana', color='black'),
-                                 tickfont=dict(family='Calibri', color='darkred', size=25))
-                return fig
-            return {}
+                    index = np.where(df[["nodes"]] == int(data['id']))[0][0]
+                    bet_centrality = df["bet_centrality"][index]
+                    closeness_centrality = df["closeness_centrality"][index]
+                    eigen_centrality = df["eigen_centrality"][index]
+                    return "The betweenness centrality: {} The closeness centrality: {} The eigenvetor centrality: {}".format(round(bet_centrality, 5), round(closeness_centrality, 5), round(eigen_centrality, 5))
+            return "Nodes not selected"
 
     def parse_contents_nodes(self, contents, filename, date):
         content_type, content_string = contents.split(',')
-
         decoded = base64.b64decode(content_string)
         try:
             if 'csv' in filename:

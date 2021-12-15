@@ -45,14 +45,14 @@ class MyGraph:
             nx.set_node_attributes(self.graph, dict_nodes[key], name=key)
 
     def set_centrality_measures(self):
+        print(len(self.df_centrality))
         betweeness_centrality = self.betweeness_centrality()
-        #print(betweeness_centrality)
         g_closeness_centrality = self.closeness_centrality()
         eigen_centrality = self.eigenvector_centrality()
-        self.df_centrality["nodes"] = np.array(betweeness_centrality.keys())
-        self.df_centrality["bet_centrality"] = np.array(betweeness_centrality.values())
-        self.df_centrality["closeness_centrality"] = np.array(g_closeness_centrality.values())
-        #self.df_centrality["eigen_centrality"] = np.array(eigen_centrality.values())
+        self.df_centrality["nodes"] = list(betweeness_centrality.keys())
+        self.df_centrality["bet_centrality"] = list(betweeness_centrality.values())
+        self.df_centrality["closeness_centrality"] = list(g_closeness_centrality.values())
+        self.df_centrality["eigen_centrality"] = list(eigen_centrality.values())
 
     # Todo: Improve the Visualisation of the Graph
     def temp_visualization(self):
