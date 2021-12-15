@@ -31,7 +31,15 @@ class MyGraph:
     # Function To Build Graph
     def createGraph(self):
         self.graph.add_nodes_from(self.df_nodes['#BIOGRID ID'])
-        self.graph = nx.from_pandas_edgelist(self.df_edges, 'BioGRID ID Interactor A','BioGRID ID Interactor B')
+        length = len(self.df_edges)
+        tab = self.graph.nodes()
+        for x in range(length):
+            first = self.df_edges.iat[x,3]
+            second = self.df_edges.iat[x,4]
+            if first in tab and second in tab:
+                self.graph.add_edge(first,second)
+
+#        self.graph = nx.from_pandas_edgelist(self.df_edges, 'BioGRID ID Interactor A','BioGRID ID Interactor B')
         dict_nodes = self.df_nodes.set_index('#BIOGRID ID').to_dict()
         for key in dict_nodes:
             nx.set_node_attributes(self.graph, dict_nodes[key], name=key)
