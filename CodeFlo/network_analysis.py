@@ -9,6 +9,8 @@ np.random.seed(42)
 class MyGraph:
     def __init__(self, nodes=None, edges=None):
         self.graph = nx.Graph()
+        self.graph_all = nx.Graph()
+        self.mst = None
         self.df_nodes = nodes
         self.df_edges = edges
         self.df_nodes["color"] = ["yellow" for _ in range(self.df_nodes.shape[0])]
@@ -31,6 +33,7 @@ class MyGraph:
     # Function To Build Graph
     def createGraph(self):
         self.graph.add_nodes_from(self.df_nodes['#BIOGRID ID'])
+        self.graph_all = nx.from_pandas_edgelist(self.df_edges,'Official Symbol Interactor A','Official Symbol Interactor B')
         length = len(self.df_edges)
         tab = self.graph.nodes()
         for x in range(length):
@@ -39,10 +42,11 @@ class MyGraph:
             if first in tab and second in tab:
                 self.graph.add_edge(first,second)
 
-#        self.graph = nx.from_pandas_edgelist(self.df_edges, 'BioGRID ID Interactor A','BioGRID ID Interactor B')
         dict_nodes = self.df_nodes.set_index('#BIOGRID ID').to_dict()
+        self.mst = nx.minimum_spanning_tree(self.graph)
         for key in dict_nodes:
             nx.set_node_attributes(self.graph, dict_nodes[key], name=key)
+            nx.set_node_attributes(self.mst, dict_nodes[key], name=key)
 
     def set_centrality_measures(self):
         print(len(self.df_centrality))
@@ -103,34 +107,34 @@ class MyGraph:
         return nx.betweenness_centrality(self.graph)
     def ncommunities(self):
         partition = community_louvain.best_partition(self.graph)
-        print(type(partition))
         return max(partition.values()) + 1
     def communities_detection(self):
         return community_louvain.best_partition(self.graph)
-    # the K-core decomposition
-    def k_core_decomposition(self):
-        k = 1
-        graph = self.graph.copy()
-        store_k_shell = {}
-        nodes = [n for n in graph.nodes()]
-        for node in nodes:
-            if graph.degree(node) == 0:
-                graph.remove_node(node)
-        while graph.number_of_nodes() != 0:
-            to_prune = [key1 for key1, v in {key: graph.degree(key) for key in graph.nodes()}.items() if v == k]
-            k_shell = []
-            while len(to_prune) > 0:
-                i = to_prune.pop(0)
-                neighbors = [l for l in graph.neighbors(i)]
-                for j in neighbors:
-                    if j in graph.nodes() and graph.degree(j) - 1 == k:
-                        to_prune.append(j)
-                k_shell.append(i)
-                graph.remove_node(i)
-            # store shell
-            if len(k_shell) != 0: store_k_shell[k] = k_shell
-            k += 1
-        return store_k_shell
+    # compute shortest path
+    # DOIT RENVOYER UN TABLEAU DE DICO ET ELEMENTS EST UN TAB DE DICO DU GRAPH PRINCIPALE
+    def shortestpath(self,source,target,elements):
+        BioGRID_source = None ## BIOGRID ID (int)
+        BioGRID_target = None##BIOGRID ID (int)
+        for node in self.graph.nodes:### node c'est un int
+            if source == self.graph.nodes[node].get('OFFICIAL SYMBOL'):
+                BioGRID_source = node## biogrid id de la source
+            elif target == self.graph.nodes[node].get('OFFICIAL SYMBOL'):
+                BioGRID_target = node ##biogrid id de la target
+        path = nx.shortest_path(self.graph,BioGRID_source,BioGRID_target)
+        to_add = {'classes':'red'}
+        nb = self.numberofnodes()
+        for x in range(len(path)):
+            for y in range(nb):
+                if str(path[x]) == (elements[y]['data']['id']):
+                    elements[y].update(to_add)
+        nedges = self.numberofedges()
+        for i in range(len(path)-1):
+            for j in range(nedges):
+                if (((elements[nb+j]['data']['source'] == str(path[i])) | (elements[nb+j]['data']['target'] == str(path[i]))) & ((elements[nb+j]['data']['source'] == str(path[i+1]))|(elements[nb+j]['data']['target']==str(path[i+1])))):
+                    elements[nb+j].update(to_add)
+        return elements
+        ## colorier les nodes du chemin trouvédans le dico
+        # renvoyer le dico
     def get_elem(self):
         nodes = []
         edges = []
@@ -143,18 +147,30 @@ class MyGraph:
         return nodes + edges 
     def get_elements(self, layout):
         pos = nx.random_layout(self.graph)
+        pos2 = nx.random_layout(self.mst)
         if layout == 'circular':
             pos = nx.circular_layout(self.graph)
+            pos2 = nx.circular_layout(self.mst)
+
         if layout == 'spectral':
             pos = nx.spectral_layout(self.graph)
+            pos2 = nx.spectral_layout(self.mst)
+
         if layout == 'spring':
             pos = nx.spring_layout(self.graph)
+            pos2 = nx.spring_layout(self.mst)
+
         if layout == "fruchterman":
             pos = nx.fruchterman_reingold_layout(self.graph)
+            pos2 = nx.fruchterman_reingold_layout(self.mst)
+
         if layout == "spiral":
             pos = nx.spiral_layout(self.graph)
+            pos2 = nx.spiral_layout(self.mst)
+            
         if layout == "shell":
             pos = nx.shell_layout(self.graph)
+            pos2 = nx.shell_layout(self.mst)
         nodes = [
             {
                 'data': {'id': str(node), 'label': self.graph.nodes[node].get('OFFICIAL SYMBOL', 'Unknown')},
@@ -168,7 +184,20 @@ class MyGraph:
             }
             for source, target in self.graph.edges
         ]
-        return nodes + edges
+        nodes2 = [
+            {
+                'data': {'id': str(node), 'label': self.graph.nodes[node].get('OFFICIAL SYMBOL', 'Unknown')},
+                'position': {'x': pos2[node][0]*1000 , 'y': pos2[node][1]*1000}
+            }
+            for node in self.graph.nodes
+        ]
+        edges2 = [
+            {
+                'data': {'source': str(source), 'target': str(target), 'label': self.mst.edges[(source, target)].get('Official Symbol', 'Unknown')}
+            }
+            for source, target in self.mst.edges       
+        ]      
+        return nodes + edges, nodes2 + edges2
     def color_elems(self,partition,elements):
         elem = elements.copy()
         tab = [0]*(self.numberofnodes())
@@ -194,3 +223,20 @@ class MyGraph:
                     elem[count].update(to_add)
                     count = count + 1
         return elem
+    def alledges(self,node_data):
+        ###dico info sur le nœud
+        name = node_data['label']
+        print(name)
+        G = nx.Graph()
+        for x in self.graph_all.adj[name]:
+            G.add_edge(name,x)
+        pos = nx.circular_layout(self.graph_all)
+        elements= []
+        nodes = []
+        edges = []
+        for node in G.nodes:
+            nodes.append({'data':{'id' : node},'position':{'x': pos[node][0]*1000, 'y': pos[node][1]*1000}})
+        for source,target in G.edges:
+            edges.append({'data':{'source':source,'target':target}})
+        return nodes + edges
+        

@@ -2,13 +2,12 @@ import pandas as pd
 import base64
 import datetime
 import io
-import numpy as np
 from dash import dcc, html, Dash
+import numpy as np
 from dash.dependencies import Input, Output, State
 from network_analysis import MyGraph
 import dash_cytoscape as cyto
 import plotly.express as px
-import plotly.graph_objects as go
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -71,60 +70,119 @@ class InfoVis:
                             options=[
                                 {"label": d, "value": d} for d in self.layouts
                             ],
-                            placeholder = 'Select a view',
+                            placeholder='Select a view',
                             multi=False,
-                            value="random",
+                            value=None,
                             style={
                                 'width': '100%',
                                 'margin': '6px'
                             }
                         ),
                         html.Div(
-                            [   #html.Br(),
-                                #html.Div([
+                            [
+                                # html.Br(),
+                                # html.Div([
                                 #    dcc.Graph(
                                 #        id='graph',
                                 #        figure={}
                                 #    )
-                               # ], style={"width": "100%"}),
+                                # ], style={"width": "100%"}),
                                 html.Br(),
                                 html.Br(),
                                 html.Div([
-                                    html.Button(children='Numerical Metrics',id = 'numerical metrics button',n_clicks=0),
-                                    html.Div(id='numerical metrics output',children='', style={"margin": "30px 0 30px 0"}),
-                                    html.Button(children='Number of Communities',id = 'communities button',n_clicks=0),
-                                    html.Div(id='communities output',children='', style={"margin": "30px 0 30px 0"})
+                                    html.Button(children='Numerical Metrics', id='numerical metrics button', n_clicks=0),
+                                    html.Div(id='number of nodes output', children='', style={"margin": "10px 0 10px 10px"}),
+                                    html.Div(id='number of edges output', children='', style={"margin": "10px 0 10px 10px"}),
+                                    html.Div(id='assortativity degree output', children='', style={"margin": "10px 0 10px 10px"}),
+                                    html.Div(id='density output', children=''),
+
+                                    html.Button(children='Number of Communities', id='communities button', n_clicks=0),
+                                    html.Div(id='communities output', children='')
                                 ])
-                            ],style={'display': 'flex', "margin": "30px 10px 0 10px"}
+                            ], style={"margin": "30px 0 30px 10px"}
                         ),
                         html.Div([
                             html.H5("Centrality measures: "),
                             html.Div(id='centrality-measures', children='', style={"margin": "10px 0 30px 10px"}),
-                        ], style={"margin": "30px 10px 0 10px"})
-                    ],
-                    style={"width": "20%"}),
+                        ], style={"margin": "30px 10px 0 10px"}),
+                        cyto.Cytoscape(
+                            id='details network',
+                            elements=[],
+                            style={'width': '100%', 'height': '500px'},
+                            layout={'name': 'preset'},
+                            stylesheet=[{'selector': 'node', 'style': {'label': 'data(id)'}}],
+                            minZoom=0.05,
+                            maxZoom=0.5
+                        )
+                    ], style={"width": "40%"}),
                 html.Div(
                     cyto.Cytoscape(
                         id='network',
                         elements=[],
-                        style={'width': '100%', 'height': '500px'},
+                        style={'width': '100%', 'height': '800px'},
                         layout={
                             'name': "preset"
                         },
                         minZoom=0.2,
                         maxZoom=10
-                    ), style={'width': '80%'}),
+                    ), style={'width': '60%'}),
                 html.Div(
-                cyto.Cytoscape(
-                    id = 'communities network',
-                    elements=[],
-                    style = {'width':'100%', 'height': '500px'},
-                    layout = {'name':'preset'},
-                    minZoom = 0.2,
-                    maxZoom = 10,
-                    stylesheet=[],
-                    ),style = {'width': '80%'}
-                
+                    cyto.Cytoscape(
+                        id='communities network',
+                        elements=[],
+                        style={'width': '100%', 'height': '800px'},
+                        layout={'name': 'preset'},
+                        minZoom=0.2,
+                        maxZoom=10,
+                        stylesheet=[],
+                    ), style={'width': '80%'}
+
+                ),
+                html.Div([
+                    html.Div(id='mst title', children='Minimum Spanning Tree'),
+                    #                 dcc.Dropdown(
+                    #                     id = 'mst select-layout',
+                    #                     options = [{"label": d, "value": d} for d in self.layouts],
+                    #                     placeholder = 'Select a view',
+                    ##                     multi = False,
+                    #                    value = 'random',
+                    #                    style = {
+                    #                        'width':'100%',
+                    #                        'margin':'6px'
+                    #                    }
+                    #                ),
+                    cyto.Cytoscape(
+                        id='mst',
+                        elements=[],
+                        style={'witdh': '100%', 'height': '800px'},
+                        layout={'name': 'preset'},
+                        minZoom=0.2,
+                        maxZoom=10,
+                        stylesheet=[],
+                    )], style={'width': '100%'}
+
+                ),
+                html.Div([
+                    html.Div(id='shortest path title', children='Shortest Path'),
+                    dcc.Input(id='Source Input', type='text', placeholder='Source Official Name',
+                              style={'width': '50%'}),
+                    dcc.Input(id='Target Input', type='text', placeholder='Target Official Name',
+                              style={'width': '50%'}),
+                    html.Button(children='submit', id='submit button', n_clicks=0)
+                ], style={'width': '30%'}),
+                html.Div(
+                    cyto.Cytoscape(
+                        id='shortest path network',
+                        elements=[],
+                        layout={'name': 'preset'},
+                        style={'width': '100%', 'height': '800px'},
+                        minZoom=0.2,
+                        maxZoom=10,
+                        stylesheet=[{'selector': 'node', 'style': {'label': 'data(label)'}},
+                                    {'selector': 'edge', 'style': {'alpha': '0.2'}},
+                                    {'selector': '.red',
+                                     'style': {'background-color': 'red', 'line-color': 'red', 'alpha': '0.1'}}]
+                    ), style={'width': '70%'}
                 )
             ], style={
                 "display": "flex",
@@ -133,25 +191,54 @@ class InfoVis:
             })], style={}
         )
 
-        @self.app.callback(Output('communities output','children'),
-                           Output('communities network','elements'),
-                           Input('communities button','n_clicks'),
-                           State('network','elements'))
-        def nbcommunities(n,elems):
-            if (n%2 == 0):
-                return '',[]
-            else :
-                new_elems = self.graph.color_elems(self.graph.communities_detection(),elems)
-                print(new_elems)
+        @self.app.callback(Output('details network', 'elements'),
+                           Input('network', 'tapNodeData'))
+        def detail_node(node_data):
+            print(node_data)
+            if self.graph:
+                x = self.graph.alledges(node_data)
+                print(x)
+                return x
+            else:
+                return []
+
+        @self.app.callback(Output('shortest path network', 'elements'),
+                           Input('submit button', 'n_clicks'),
+                           State('Source Input', 'value'),
+                           State('Target Input', 'value'),
+                           State('network', 'elements'),
+                           )
+        def shortest_path(n, source_name, target_name, elems):
+            if n > 0:
+                return self.graph.shortestpath(source_name, target_name, elems)
+            else:
+                return []
+
+        @self.app.callback(Output('communities output', 'children'),
+                           Output('communities network', 'elements'),
+                           Input('communities button', 'n_clicks'),
+                           State('network', 'elements'))
+        def nbcommunities(n, elems):
+            if (n % 2 == 0):
+                return '', []
+            else:
+                new_elems = self.graph.color_elems(self.graph.communities_detection(), elems)
                 return 'Number of Communities : {}'.format(self.graph.ncommunities()), new_elems
 
-        @self.app.callback(Output('numerical metrics output','children'),
-        Input('numerical metrics button','n_clicks'))
+        @self.app.callback(
+            Output('number of nodes output', 'children'),
+            Output('number of edges output', 'children'),
+            Output('assortativity degree output', 'children'),
+            Output('density output', 'children'),
+            Input('numerical metrics button', 'n_clicks'))
         def numerical_metrics(n):
-            if (n%2 == 0):
-                return ''
-            else :
-                return 'Number of Nodes : {} Number of Edges : {} Assortativity Degree : {} Density : {}'.format(self.graph.numberofnodes(),self.graph.numberofedges(),self.graph.assortativitydegree(),self.graph.density())
+            if (n % 2 == 0):
+                return '', '', '', ''
+            else:
+                return ('Number of Nodes : {}'.format(self.graph.numberofnodes()),
+                        ' Number of Edges : {}'.format(self.graph.numberofedges()),
+                        ' Assortativity Degree : {}'.format(self.graph.assortativitydegree()),
+                        'Density : {}'.format(self.graph.density()))
 
         @self.app.callback(Output('output-data-upload-nodes', 'children'),
                            Input('upload-data-nodes', 'contents'),
@@ -177,14 +264,16 @@ class InfoVis:
 
         @self.app.callback(
             Output(component_id="network", component_property="elements"),
-            Output(component_id = "communities network", component_property ="stylesheet"),
+            Output('mst', 'elements'),
+            Output(component_id="communities network", component_property="stylesheet"),
+            Output(component_id="mst", component_property="stylesheet"),
             Input(component_id="select-layout", component_property="value")
         )
         def update_network(option_selected):
             if self.graph:
-                x = {'name': option_selected }
-                return self.graph.get_elements(option_selected), self.graph.setupstylesheet()
-            return {},[]
+                x = self.graph.get_elements(option_selected)
+                return x[0], x[1], self.graph.setupstylesheet(), self.graph.setupstylesheet()
+            return [], [], [], []
 
         @self.app.callback(
             Output('centrality-measures', 'children'),
@@ -201,11 +290,13 @@ class InfoVis:
                     bet_centrality = df["bet_centrality"][index]
                     closeness_centrality = df["closeness_centrality"][index]
                     eigen_centrality = df["eigen_centrality"][index]
-                    return "The betweenness centrality: {} The closeness centrality: {} The eigenvetor centrality: {}".format(round(bet_centrality, 5), round(closeness_centrality, 5), round(eigen_centrality, 5))
+                    return "The betweenness centrality: {} The closeness centrality: {} The eigenvetor centrality: {}".format(
+                        round(bet_centrality, 5), round(closeness_centrality, 5), round(eigen_centrality, 5))
             return "Nodes not selected"
 
     def parse_contents_nodes(self, contents, filename, date):
         content_type, content_string = contents.split(',')
+
         decoded = base64.b64decode(content_string)
         try:
             if 'csv' in filename:
