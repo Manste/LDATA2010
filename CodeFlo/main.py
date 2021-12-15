@@ -2,11 +2,13 @@ import pandas as pd
 import base64
 import datetime
 import io
+import numpy as np
 from dash import dcc, html, Dash
 from dash.dependencies import Input, Output, State
 from network_analysis import MyGraph
 import dash_cytoscape as cyto
 import plotly.express as px
+import plotly.graph_objects as go
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -77,13 +79,31 @@ class InfoVis:
                                 'margin': '6px'
                             }
                         ),
+                        html.Div(
+                            [   #html.Br(),
+                                #html.Div([
+                                #    dcc.Graph(
+                                #        id='graph',
+                                #        figure={}
+                                #    )
+                               # ], style={"width": "100%"}),
+                                html.Br(),
+                                html.Br(),
+                                html.Div([
+                                    html.Button(children='Numerical Metrics',id = 'numerical metrics button',n_clicks=0),
+                                    html.Div(id='numerical metrics output',children='', style={"margin": "30px 0 30px 0"}),
+                                    html.Button(children='Number of Communities',id = 'communities button',n_clicks=0),
+                                    html.Div(id='communities output',children='', style={"margin": "30px 0 30px 0"})
+                                ])
+                            ],style={'display': 'flex', "margin": "30px 10px 0 10px"}
+                        )
                     ],
                     style={"width": "20%"}),
                 html.Div(
                     cyto.Cytoscape(
                         id='network',
                         elements=[],
-                        style={'width': '100%', 'height': '800px'},
+                        style={'width': '100%', 'height': '500px'},
                         layout={
                             'name': "preset"
                         },
@@ -92,28 +112,21 @@ class InfoVis:
                     ), style={'width': '80%'}),
                 html.Div(
                     [
-                        #html.Br(),
-                        #html.Div([
-                        #    dcc.Graph(
-                        #        id='graph',
-                        #        figure={}
-                        #    )
-                       # ], style={"width": "100%"}),
-                        html.Br(),
                         html.Br(),
                         html.Div([
-                            html.Button(children='Numerical Metrics',id = 'numerical metrics button',n_clicks=0),
-                            html.Div(id='numerical metrics output',children=''),
-                            html.Button(children='Number of Communities',id = 'communities button',n_clicks=0),
-                            html.Div(id='communities output',children='')                            
-                        ])
-                    ],style={'display': 'flex'}
+                            dcc.Graph(
+                                id='graph',
+                                figure={}
+                            )
+                        ], id="centrality-charts", style={"width": "100%"}),
+                    ],
+                    style={"width": "100%"}
                 ),
                 html.Div(
                 cyto.Cytoscape(
                     id = 'communities network',
                     elements=[],
-                    style = {'width':'100%', 'height': '800px'},
+                    style = {'width':'100%', 'height': '500px'},
                     layout = {'name':'preset'},
                     minZoom = 0.2,
                     maxZoom = 10,
@@ -178,25 +191,51 @@ class InfoVis:
                 return self.graph.get_elements(option_selected), self.graph.setupstylesheet()
             return {},[]
 
-#        @self.app.callback(
-#            [
-#                Output('graph', 'figure'),
-#                Output('graph', 'style')
-#             ],
-#            Input('network', 'tapNodeData'),
-#        )
-#        def update_nodes(data):
-#            style= {"width": "100%", "display": "block"}
-#            if self.graph is not None:
-##                df_nodes = self.graph.df_nodes.copy()
- #               if data is None:
- #                   fig = px.bar(df_nodes, x="OFFICIAL SYMBOL", y="INTERACTION COUNT")
- #               else:
- #                   df_nodes.loc[df_nodes["OFFICIAL SYMBOL"] == data["label"], "color"] = "red"
- #                   fig = px.bar(df_nodes, x="OFFICIAL SYMBOL", y="INTERACTION COUNT")
- #               fig.update_traces(marker={'color': df_nodes['color']})
- #               return fig, style
- #           return {}, style
+        @self.app.callback(
+            Output('graph', 'figure'),
+            Input('network', 'tapNodeData')
+        )
+        def update_nodes(data):
+            anchos = [0.2] * 5
+            fig = go.Figure()
+            if self.graph is not None:
+                self.graph.set_centrality_measures()
+                df = self.graph.df_centrality.copy()
+                print(data)
+                if data is None:
+                    fig.add_trace(
+                        go.Bar(x=df["nodes"].iloc[1:22], y=df["bet_centrality"].iloc[1:22], width=anchos, name="Betweeness centrality")
+                    )
+                    fig.add_trace(
+                        go.Bar(x=df["nodes"].iloc[1:22], y=df["closeness_centrality"].iloc[1:22], width=anchos, name="Closeness centrality")
+                    )
+                    fig.add_trace(
+                        go.Bar(x=df["nodes"].iloc[1:22], y=df["eigen_centrality"].iloc[1:22], width=anchos, name="Eigenvalue centrality")
+                    )
+                else:
+                    index = np.where(df[["nodes"]] == data.id)[0][0]
+                    start_idx = 11 - index
+                    end_idx = 11 + index
+                    fig.add_trace(
+                        go.Bar(x=df["nodes"].iloc[start_idx:end_idx], y=df["bet_centrality"].iloc[start_idx:end_idx], width=anchos, name="Betweeness centrality", text=df["bet_centrality"].iloc[start_idx:end_idx])
+                    )
+                    fig.add_trace(
+                        go.Bar(x=df["nodes"].iloc[start_idx:end_idx], y=df["closeness_centrality"].iloc[start_idx:end_idx], width=anchos, name="Closeness centrality", text=df["closeness_centrality"].iloc[start_idx:end_idx])
+                    )
+                    fig.add_trace(
+                        go.Bar(x=df["nodes"].iloc[start_idx:end_idx], y=df["eigen_centrality"].iloc[start_idx:end_idx], width=anchos, name="Eigenvalue centrality", text=["eigen_centrality"].iloc[start_idx:end_idx])
+                    )
+                fig.update_layout(title="Centrality measurement",
+                                  barmode='group', title_font_size=40,
+                                  width=1000, height=500)
+                fig.update_xaxes(title_text='Nodes',
+                                 title_font=dict(size=30, family='Verdana', color='black'),
+                                 tickfont=dict(family='Calibri', color='darkred', size=25))
+                fig.update_yaxes(title_text="Values",
+                                 title_font=dict(size=30, family='Verdana', color='black'),
+                                 tickfont=dict(family='Calibri', color='darkred', size=25))
+                return fig
+            return {}
 
     def parse_contents_nodes(self, contents, filename, date):
         content_type, content_string = contents.split(',')

@@ -14,7 +14,19 @@ class MyGraph:
         self.df_nodes["color"] = ["yellow" for _ in range(self.df_nodes.shape[0])]
         self.createGraph()
         self.colors = []
+        self.df_centrality = pd.DataFrame(columns=["nodes", "bet_centrality", "closeness_centrality", "eigen_centrality"])
 
+    def betweenness_centrality(self):
+        return nx.betweenness_centrality(self.graph)
+
+    def closeness_centrality(self, node=None):
+        if node:
+            return nx.closeness_centrality(self.graph, node)
+        else:
+            return nx.closeness_centrality(self.graph)
+
+    def eigenvector_centrality(self):
+        return nx.eigenvector_centrality(self.graph)
     
     # Function To Build Graph
     def createGraph(self):
@@ -23,6 +35,16 @@ class MyGraph:
         dict_nodes = self.df_nodes.set_index('#BIOGRID ID').to_dict()
         for key in dict_nodes:
             nx.set_node_attributes(self.graph, dict_nodes[key], name=key)
+
+    def set_centrality_measures(self):
+        betweeness_centrality = self.betweeness_centrality()
+        #print(betweeness_centrality)
+        g_closeness_centrality = self.closeness_centrality()
+        eigen_centrality = self.eigenvector_centrality()
+        self.df_centrality["nodes"] = np.array(betweeness_centrality.keys())
+        self.df_centrality["bet_centrality"] = np.array(betweeness_centrality.values())
+        self.df_centrality["closeness_centrality"] = np.array(g_closeness_centrality.values())
+        #self.df_centrality["eigen_centrality"] = np.array(eigen_centrality.values())
 
     # Todo: Improve the Visualisation of the Graph
     def temp_visualization(self):
