@@ -1,12 +1,12 @@
 import networkx as nx
 import community as community_louvain
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
 np.random.seed(42)
 
 
 class MyGraph:
+    #Constructor
     def __init__(self, nodes=None, edges=None):
         self.graph = nx.Graph()
         self.graph_all = nx.Graph()
@@ -18,15 +18,18 @@ class MyGraph:
         self.colors = []
         self.df_centrality = pd.DataFrame(columns=["nodes", "bet_centrality", "closeness_centrality", "eigen_centrality"])
 
+    # Compute the betweennees centrality 
     def betweenness_centrality(self):
         return nx.betweenness_centrality(self.graph)
-
+    
+    # Compute closeness centrality
     def closeness_centrality(self, node=None):
         if node:
             return nx.closeness_centrality(self.graph, node)
         else:
             return nx.closeness_centrality(self.graph)
-
+        
+   # Compote eigenvector centrality
     def eigenvector_centrality(self):
         return nx.eigenvector_centrality(self.graph)
     
@@ -47,7 +50,8 @@ class MyGraph:
         for key in dict_nodes:
             nx.set_node_attributes(self.graph, dict_nodes[key], name=key)
             nx.set_node_attributes(self.mst, dict_nodes[key], name=key)
-
+            
+    # Set up the centrality measures
     def set_centrality_measures(self):
         print(len(self.df_centrality))
         betweeness_centrality = self.betweeness_centrality()
@@ -57,20 +61,14 @@ class MyGraph:
         self.df_centrality["bet_centrality"] = list(betweeness_centrality.values())
         self.df_centrality["closeness_centrality"] = list(g_closeness_centrality.values())
         self.df_centrality["eigen_centrality"] = list(eigen_centrality.values())
-
-    # Todo: Improve the Visualisation of the Graph
-    def temp_visualization(self):
-        plt.figure(figsize=(25, 20))
-        plt.title('Protein Graph')
-        pos1 = nx.spring_layout(self.graph, k=3, iterations=10)
-        nx.draw_networkx_nodes(self.graph, pos1, alpha=0.5)
-        nx.draw_networkx_edges(self.graph, pos1, alpha=0.3)
-        nx.draw_networkx_labels(self.graph, pos1, font_size=10)
-        plt.show()
+        
+    # load color.csv 
     def setupcolors(self):
         df = pd.read_csv('color.csv', dtype=str)
         df = df.iloc[:,0]
         self.colors = df.to_numpy()
+        
+     # Set up stylesheet of the graph   
     def setupstylesheet(self):
         tab_colors = self.colors
         tab_stylesheet = []
@@ -96,30 +94,35 @@ class MyGraph:
     #compute the assortativity degree
     def assortativitydegree(self):
         return nx.degree_assortativity_coefficient(self.graph)
+    
     # compute density
     def density(self):
         return nx.density(self.graph)
+    
     #compute the average connectivity
     def connectivity(self):
         return nx.average_node_connectivity(self.graph)
+    
     # compute betweenness centrality
     def betweeness_centrality(self):
         return nx.betweenness_centrality(self.graph)
+    
     def ncommunities(self):
         partition = community_louvain.best_partition(self.graph)
         return max(partition.values()) + 1
+    #compute communitieq detection 
     def communities_detection(self):
         return community_louvain.best_partition(self.graph)
+    
     # compute shortest path
-    # DOIT RENVOYER UN TABLEAU DE DICO ET ELEMENTS EST UN TAB DE DICO DU GRAPH PRINCIPALE
     def shortestpath(self,source,target,elements):
-        BioGRID_source = None ## BIOGRID ID (int)
-        BioGRID_target = None##BIOGRID ID (int)
-        for node in self.graph.nodes:### node c'est un int
+        BioGRID_source = None 
+        BioGRID_target = None
+        for node in self.graph.nodes:
             if source == self.graph.nodes[node].get('OFFICIAL SYMBOL'):
-                BioGRID_source = node## biogrid id de la source
+                BioGRID_source = node
             elif target == self.graph.nodes[node].get('OFFICIAL SYMBOL'):
-                BioGRID_target = node ##biogrid id de la target
+                BioGRID_target = node
         path = nx.shortest_path(self.graph,BioGRID_source,BioGRID_target)
         to_add = {'classes':'red'}
         nb = self.numberofnodes()
@@ -133,8 +136,7 @@ class MyGraph:
                 if (((elements[nb+j]['data']['source'] == str(path[i])) | (elements[nb+j]['data']['target'] == str(path[i]))) & ((elements[nb+j]['data']['source'] == str(path[i+1]))|(elements[nb+j]['data']['target']==str(path[i+1])))):
                     elements[nb+j].update(to_add)
         return elements
-        ## colorier les nodes du chemin trouvédans le dico
-        # renvoyer le dico
+    
     def get_elem(self):
         nodes = []
         edges = []
@@ -145,6 +147,8 @@ class MyGraph:
             y = {'data': {'source': str(source), 'target': str(target), 'label': self.graph.edges[(source, target)].get('Official Symbol', 'Unknown')}}
             edges.append(y)
         return nodes + edges 
+    
+    #Function to have the coordinates of nodes depending on the layout selected
     def get_elements(self, layout):
         pos = nx.random_layout(self.graph)
         pos2 = nx.random_layout(self.mst)
@@ -152,17 +156,9 @@ class MyGraph:
             pos = nx.circular_layout(self.graph)
             pos2 = nx.circular_layout(self.mst)
 
-        if layout == 'spectral':
-            pos = nx.spectral_layout(self.graph)
-            pos2 = nx.spectral_layout(self.mst)
-
         if layout == 'spring':
             pos = nx.spring_layout(self.graph)
             pos2 = nx.spring_layout(self.mst)
-
-        if layout == "fruchterman":
-            pos = nx.fruchterman_reingold_layout(self.graph)
-            pos2 = nx.fruchterman_reingold_layout(self.mst)
 
         if layout == "spiral":
             pos = nx.spiral_layout(self.graph)
@@ -198,6 +194,8 @@ class MyGraph:
             for source, target in self.mst.edges       
         ]      
         return nodes + edges, nodes2 + edges2
+    
+    # Function to color the different nodes by their communities
     def color_elems(self,partition,elements):
         elem = elements.copy()
         tab = [0]*(self.numberofnodes())
@@ -207,7 +205,6 @@ class MyGraph:
                 index = partition.get(i)
                 if tab[index] == 0:
                     if index < 147:
-#                   x = np.random.randint(0,863)
                         tab[index] = self.colors[index]
                         to_add = {'classes':tab[index]}
                         elem[count].update(to_add)
@@ -223,8 +220,9 @@ class MyGraph:
                     elem[count].update(to_add)
                     count = count + 1
         return elem
+    
+    # Function to display all the edges of the selected node
     def alledges(self,node_data):
-        ###dico info sur le nœud
         name = node_data['label']
         print(name)
         G = nx.Graph()
