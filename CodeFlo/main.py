@@ -4,12 +4,17 @@ import datetime
 import io
 from dash import dcc, html, Dash
 import numpy as np
-from dash.dependencies import Input, Output, State
 from network_analysis import MyGraph
+from dash.dependencies import Input, Output, State
 import dash_cytoscape as cyto
-import plotly.express as px
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+#Transform .txt of dataset into .csv
+df = pd.read_csv("BIOGRID-PROJECT-glioblastoma_project-GENES.projectindex.txt", sep="\t", dtype='unicode')
+df.to_csv("node.csv", index=False)
+df = pd.read_csv("BIOGRID-PROJECT-glioblastoma_project-INTERACTIONS.tab3.txt", sep="\t", dtype='unicode')
+df.to_csv("edges.csv", index=False)
 
 
 class InfoVis:
@@ -19,7 +24,7 @@ class InfoVis:
         self.df_edges = None
         self.graph = None
         self.temp = []
-        self.layouts = ["circular", "random", "shell", "spring", "spectral", "spiral"]
+        self.layouts = ["circular", "random", "shell", "spring", "spiral"]
         self.app.layout = html.Div([
             html.H1("Web application for network visualization"),
             html.Div([
@@ -80,13 +85,6 @@ class InfoVis:
                         ),
                         html.Div(
                             [
-                                # html.Br(),
-                                # html.Div([
-                                #    dcc.Graph(
-                                #        id='graph',
-                                #        figure={}
-                                #    )
-                                # ], style={"width": "100%"}),
                                 html.Br(),
                                 html.Br(),
                                 html.Div([
@@ -140,17 +138,6 @@ class InfoVis:
                 ),
                 html.Div([
                     html.Div(id='mst title', children='Minimum Spanning Tree'),
-                    #                 dcc.Dropdown(
-                    #                     id = 'mst select-layout',
-                    #                     options = [{"label": d, "value": d} for d in self.layouts],
-                    #                     placeholder = 'Select a view',
-                    ##                     multi = False,
-                    #                    value = 'random',
-                    #                    style = {
-                    #                        'width':'100%',
-                    #                        'margin':'6px'
-                    #                    }
-                    #                ),
                     cyto.Cytoscape(
                         id='mst',
                         elements=[],
@@ -164,9 +151,9 @@ class InfoVis:
                 ),
                 html.Div([
                     html.Div(id='shortest path title', children='Shortest Path'),
-                    dcc.Input(id='Source Input', type='text', placeholder='Source Official Name',
+                    dcc.Input(id='Source Input', type='text', placeholder='Source Official Symbol',
                               style={'width': '50%'}),
-                    dcc.Input(id='Target Input', type='text', placeholder='Target Official Name',
+                    dcc.Input(id='Target Input', type='text', placeholder='Target Official Symbol',
                               style={'width': '50%'}),
                     html.Button(children='submit', id='submit button', n_clicks=0)
                 ], style={'width': '30%'}),
@@ -342,5 +329,6 @@ class InfoVis:
 
 
 if __name__ == '__main__':
+    
     project = InfoVis()
     project.app.run_server(debug=False)
